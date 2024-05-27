@@ -59,4 +59,5 @@ def users_creation():
     connection.close()
 
 
+houses_creation()
 users_creation()
