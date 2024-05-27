@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{%block title%}Home{% endblock %}
+
+
+{% block content %}
+
+<img class="img-fluid pt-5" src="https://placehold.co/2000x500/green/white">
+<h1>Welcome, {{ current_user.username }}!</h1>
+<h1>Your encrypted password is: {{ current_user.password }}</h1>
+<a class="btn btn-success" href="{{ url_for('logout') }}">Log out</a>
+
+{% endblock %}

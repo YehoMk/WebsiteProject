@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %}Houses{% endblock %}
+
+
+{% block content %}
+
+  {% for element in houses_table %}
+    <!--↓ Source: https://codepen.io/SteveJRobertson/pen/POdvgz?editors=1010 ↓-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 mt-3">
+          <div class="card border-success" style="width: 50em">
+            <div class="d-flex">
+              <img src= "{{ element[4] }}">
+              <div class="card-body">
+                <h5 class="card-title">{{ element[1] }}</h5>
+                <p class="card-title" style="width: 40%">{{ element[2] }}</p>
+                <a href="#" class="btn btn-success" style="position: absolute; bottom: 25px">Buy</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--↑ Source: https://codepen.io/SteveJRobertson/pen/POdvgz?editors=1010 ↑-->
+  {% endfor %}
+
+
+{% endblock %}
