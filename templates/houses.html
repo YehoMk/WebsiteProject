@@ -13,11 +13,11 @@
         <div class="col-12 mt-3">
           <div class="card border-success" style="width: 50em">
             <div class="d-flex">
-              <img src= "{{ element[4] }}">
+              <img src="{{ url_for('uploads', filename=element[4]) }}" width="250" height="250">
               <div class="card-body">
                 <h5 class="card-title">{{ element[1] }}</h5>
                 <p class="card-title" style="width: 40%">{{ element[2] }}</p>
-                <a href="#" class="btn btn-success" style="position: absolute; bottom: 25px">Buy</a>
+                <a href="{{ url_for('buy', houses_id=element[0]) }}" class="btn btn-success" style="position: absolute; bottom: 25px">Buy</a>
               </div>
             </div>
           </div>

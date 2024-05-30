@@ -1,12 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, flash
 import sqlite3
 from flask_bcrypt import Bcrypt
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+import os
+from werkzeug.utils import secure_filename
 
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config["SECRET_KEY"] = "1234"
+
+app.config["UPLOAD_FOLDER"] = "upload"
+app.config["ALLOWED_EXTENSIONS"] = {"jpg", "jpeg", "png"}
+
+
+if not os.path.exists(app.config["UPLOAD_FOLDER"]):
+    os.makedirs(app.config["UPLOAD_FOLDER"])
 
 
 login_manager = LoginManager()
@@ -103,11 +112,7 @@ def insert_users(username, password):
     connection.commit()
 
 
-@app.route("/", methods=["POST", "GET"])
-@app.route("/index/", methods=["POST", "GET"])
-@app.route("/home/", methods=["POST", "GET"])
-def index():
-
+def login():
     if request.method == "POST":
 
         username = request.form["username"]
@@ -126,11 +131,40 @@ def index():
                 login_user(user)
                 print(user.username, user.password, user)
 
-    return render_template("index.html")
+
+@app.route("/uploads/<filename>")
+def uploads(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
 
-@app.route("/houses/")
+@app.route("/", methods=["POST", "GET"])
+@app.route("/index/", methods=["POST", "GET"])
+@app.route("/home/", methods=["POST", "GET"])
+def index():
+
+    login()
+
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    houses_table = cursor.execute("""SELECT * FROM houses ORDER BY id DESC""").fetchall()
+
+    if len(houses_table) >= 3:
+        index_offer_1 = houses_table[0]
+        index_offer_2 = houses_table[1]
+        index_offer_3 = houses_table[2]
+    else:
+        index_offer_1 = (0, "default", "default", "default", "https://placehold.co/200x200", "default", "default", "default", "default")
+        index_offer_2 = (0, "default", "default", "default", "https://placehold.co/200x200", "default", "default", "default","default")
+        index_offer_3 = (0, "default", "default", "default", "https://placehold.co/200x200", "default", "default", "default", "default")
+
+    return render_template("index.html", index_offer_1=index_offer_1, index_offer_2=index_offer_2, index_offer_3=index_offer_3)
+
+
+@app.route("/houses/", methods=["POST", "GET"])
 def houses():
+
+    login()
+
     connection = sqlite3.connect("database.db")
     cursor = connection.cursor()
     houses_table = cursor.execute("""
@@ -141,25 +175,45 @@ def houses():
     return render_template("houses.html", houses_table=houses_table)
 
 
+@app.route("/buy/<int:houses_id>", methods=["POST", "GET"])
+def buy(houses_id):
+
+    login()
+
+    connection = sqlite3.connect("database.db")
+    cursor = connection.cursor()
+    houses_table = cursor.execute("""SELECT * FROM houses WHERE id=(?)""", (houses_id,)).fetchone()
+    return render_template("buy.html", houses_table=houses_table)
+
+
 @app.route("/sell/", methods=["POST", "GET"])
 def sell():
+
     if request.method == "POST":
         name = request.form["name"]
         description = request.form["description"]
         price = request.form["price"]
-        image = request.form["image"]
+        preview_image = request.files["preview_image"]
+        preview_image_filename = secure_filename(preview_image.filename)
         location = request.form["location"]
+        offer_type = request.form["offer_type"]
+        image = request.files["image"]
+        image_filename = secure_filename(image.filename)
+        user = current_user.username
+
+        preview_image.save(os.path.join(app.config["UPLOAD_FOLDER"], preview_image_filename))
+        image.save(os.path.join(app.config["UPLOAD_FOLDER"], image_filename))
 
         connection = sqlite3.connect("database.db")
         cursor = connection.cursor()
         cursor.execute("""
                        INSERT INTO houses
                        (
-                       name, description, price, image, location
+                       name, description, price, preview_image, location, offer_type, image, user
                        )
                        VALUES
-                       (?, ?, ?, ?, ?)
-                       """, (name, description, price, image, location))
+                       (?, ?, ?, ?, ?, ?, ?, ?)
+                       """, (name, description, price, preview_image_filename, location, offer_type, image_filename, user))
         connection.commit()
         connection.close()
         return redirect(url_for("sell"))
@@ -181,15 +235,20 @@ def signup():
 
     if request.method == "POST":
         username = request.form["username"]
-        password = bcrypt.generate_password_hash(request.form["password"])
 
-        print(select_username_users())
-        if username not in select_username_users():
-            insert_users(username, password)
-            return redirect(url_for("index"))
+        if request.form["password"] == request.form["confirm_password"]:
+
+            password = bcrypt.generate_password_hash(request.form["password"])
+
+            print(select_username_users())
+            if username not in select_username_users():
+                insert_users(username, password)
+                return redirect(url_for("index"))
+            else:
+                print("Error: repeating username")
+                return redirect(url_for("signup"))
         else:
-            print("Error: repeating username")
-            return redirect(url_for("signup"))
+            pass
 
     return render_template("signup.html")
 

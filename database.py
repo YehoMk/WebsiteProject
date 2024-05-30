@@ -12,8 +12,11 @@ def houses_creation():
                    name TEXT NOT NULL,
                    description TEXT NOT NULL,
                    price TEXT NOT NULL,
+                   preview_image TEXT NOT NULL,
+                   location TEXT NOT NULL,
+                   offer_type TEXT NOT NULL,
                    image TEXT NOT NULL,
-                   location TEXT NOT NULL
+                   user TEXT NOT NULL
                    )  
                    """)
 

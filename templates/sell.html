@@ -6,32 +6,50 @@
 
 {% block content %}
 
+  {% if current_user.is_anonymous == True %}
+
+  <h1 class="text-center mt-5">Not logged in</h1>
+  <p class="text-center mt-3">To upload your own houses for sale you need to create an account and log in!</p>
+
+  {% else %}
 
   <div class="card m-3 p-2 border-success" style="width: 500px">
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
 
       <label for="name">Enter the title of your house:</label> <br />
-      <input type="text" name="name" placeholder="Title" formnovalidate> <br />
+      <input type="text" name="name" placeholder="Title" formnovalidate required> <br />
 
       <br />
 
       <label for="description">Enter a fitting description:</label> <br />
-      <textarea name="description" placeholder="Description"></textarea> <br />
+      <textarea name="description" placeholder="Description" required></textarea> <br />
 
       <br />
 
       <label for="price">Enter the price:</label> <br />
-      <input type="number" name="price" placeholder="UAH"> <br />
+      <input type="number" name="price" placeholder="UAH" required> <br />
 
       <br />
 
-      <label for="image">Enter the URL for your image</label> <br />
-      <input type="url" name="image" placeholder="URL"> <br />
+      <label for="preview_image">Chose your preview image:</label> <br />
+      <input type="file" name="preview_image" accept="image/*" required> <br />
+
+      <br />
+
+      <label for="image">Chose an image:</label> <br />
+      <input type="file" name="image" accept="image/*" required> <br />
 
       <br />
 
       <label for="loaction">Enter the location of the house</label> <br />
-      <input type="text" name="location" placeholder="City"> <br />
+      <input type="text" name="location" placeholder="City" required> <br />
+
+      <br />
+
+      <label for="offer_type">Rent</label>
+      <input type="radio" name="offer_type" value="rent" required>
+      <label for="offer_type">Buy</label>
+      <input type="radio" name="offer_type" value="buy" required>
 
       <br />
 
@@ -39,4 +57,6 @@
 
     </form>
   </div>
+
+  {% endif %}
 {% endblock %}

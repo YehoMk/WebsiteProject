@@ -12,7 +12,7 @@
     <nav class="navbar navbar-expand-sm">
 
         <a class="navbar-brand pl-3 text-white font-weight-bold" href="{{ url_for('index') }}">
-          <img src="https://placehold.co/200x100">
+          <img src="{{url_for('static', filename='logo.png')}}" width="200" height="100">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -55,7 +55,7 @@
 
               <div class="form-group">
                 <label class="text-success font-weight-bold" for="password">Password:</label>
-                <input type="text" name="password" class="form-control" placeholder="Password">
+                <input type="password" name="password" class="form-control" placeholder="Password">
               </div>
 
               <input class="btn btn-success font-weight-bold w-100 mx-auto" value="Log in" type="submit">

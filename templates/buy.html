@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+
+{% block title %}Buy{% endblock  %}
+
+
+{% block content %}
+
+<div class="d-flex mt-2">
+
+  <img class="m-auto" src="{{ url_for('uploads', filename=houses_table[7]) }}" width="1000" height="500">
+
+  <div class="card border-success mx-auto p-2 w-25">
+
+    <h1 class="text-center">{{ houses_table[1] }}</h1>
+
+    {% if houses_table[6] == "rent"%}
+    <p class="font-weight-bold text-success text-center">{{ houses_table[3] }} ₴ / month</p>
+    {% elif houses_table[6] == "buy"%}
+    <p class="font-weight-bold text-success text-center">{{ houses_table[3] }} ₴</p>
+    {% endif %}
+
+    <p class="text-secondary text-center">By {{ houses_table[8] }}</p>
+
+    <p class="font-weight-bold text-center">Located in {{ houses_table[5] }}</p>
+
+    <p class="text-center">{{ houses_table[2] }}</p>
+
+    <form>
+      <div class="form-group">
+        <label class="text-secondary">Leave your contact information here, so {{ houses_table[8] }} could contact you and discuss the details of the purchase:</label>
+        <input class="form-control" type="email" placeholder="Your email" required>
+      </div>
+      <input class="btn btn-success w-100" type="submit" value="{{ houses_table[6] }}">
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}

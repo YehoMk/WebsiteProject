@@ -6,9 +6,37 @@
 
 {% block content %}
 
+{% if current_user.is_anonymous == True %}
+{% else %}
+<div class="d-flex">
+  <h1>Welcome, {{ current_user.username }}!</h1>
+  <a class="btn btn-success" href="{{ url_for('logout') }}">Log out</a>
+</div>
+{% endif %}
+
 <img class="img-fluid pt-5" src="https://placehold.co/2000x500/green/white">
-<h1>Welcome, {{ current_user.username }}!</h1>
-<h1>Your encrypted password is: {{ current_user.password }}</h1>
-<a class="btn btn-success" href="{{ url_for('logout') }}">Log out</a>
+
+<h1 class="font-weight-bold mt-3">Latest offers:</h1>
+<div class="d-flex mt-4">
+
+
+  <div class="card mx-auto border-success">
+    <img src="{{ url_for('uploads', filename=index_offer_1[4]) }}" width="200" height="200">
+    <h3 class="text-center mt-1">{{ index_offer_1[1] }}</h3>
+    <a class="btn btn-success w-100 mt-1" href="{{ url_for('buy', houses_id=index_offer_1[0]) }}">Buy</a>
+  </div>
+
+  <div class="card mx-auto border-success">
+    <img src="{{ url_for('uploads', filename=index_offer_2[4]) }}" width="200" height="200">
+    <h3 class="text-center mt-1">{{ index_offer_1[1] }}</h3>
+    <a class="btn btn-success w-100 mt-1" href="{{ url_for('buy', houses_id=index_offer_2[0]) }}">Buy</a>
+  </div>
+
+  <div class="card mx-auto border-success">
+    <img src="{{ url_for('uploads', filename=index_offer_3[4]) }}" width="200" height="200">
+    <h3 class="text-center mt-1">{{ index_offer_1[1] }}</h3>
+    <a class="btn btn-success w-100 mt-1" href="{{ url_for('buy', houses_id=index_offer_3[0]) }}">Buy</a>
+  </div>
+</div>
 
 {% endblock %}
